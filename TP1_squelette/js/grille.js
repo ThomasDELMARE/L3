@@ -7,13 +7,15 @@ class Grille {
 
   nbLignes;
   nbColonnes;
+  nbDeCookiesDifferents;
 
 
-  constructor(nbLignes, nbColonnes) {
+  constructor(nbLignes, nbColonnes, nbDeCookiesDifferents) {
     this.nbLignes = nbLignes;
     this.nbColonnes = nbColonnes;
+    this.nbDeCookiesDifferents = nbDeCookiesDifferents;
 
-    this.remplirTableauDeCookies(6);
+    this.remplirTableauDeCookies(nbDeCookiesDifferents);
   }
 
   /**
@@ -213,9 +215,9 @@ class Grille {
         c3.supprimer();
         */
 
-       ligneGrille[l] = new Cookie(Math.floor(this.nbDeCookiesDifferents * Math.random()), this.ligne, this.colonne);
-       ligneGrille[l + 1] = new Cookie(Math.floor(this.nbDeCookiesDifferents * Math.random()), this.ligne, this.colonne);
-       ligneGrille[l + 2] = new Cookie(Math.floor(this.nbDeCookiesDifferents * Math.random()), this.ligne, this.colonne);
+       ligneGrille[l] = new Cookie(Math.floor(this.nbDeCookiesDifferents * Math.random()), c1.ligne, c1.colonne);
+       ligneGrille[l + 1] = new Cookie(Math.floor(this.nbDeCookiesDifferents * Math.random()), c2.ligne, c2.colonne);
+       ligneGrille[l + 2] = new Cookie(Math.floor(this.nbDeCookiesDifferents * Math.random()), c3.ligne, c3.colonne);
 
        this.detecteAlignementLigne();
 
@@ -245,9 +247,9 @@ class Grille {
         c3.supprimer();
         */
 
-        this.tabCookies[ligne][colonne] = new Cookie(Math.floor(this.nbDeCookiesDifferents * Math.random()), this.ligne, this.colonne);
-        this.tabCookies[ligne + 1][colonne] = new Cookie(Math.floor(this.nbDeCookiesDifferents * Math.random()), this.ligne, this.colonne);
-        this.tabCookies[ligne + 2][colonne] = new Cookie(Math.floor(this.nbDeCookiesDifferents * Math.random()), this.ligne, this.colonne);
+        this.tabCookies[ligne][colonne] = new Cookie(Math.floor(this.nbDeCookiesDifferents * Math.random()), c1.ligne, c1.colonne);
+        this.tabCookies[ligne + 1][colonne] = new Cookie(Math.floor(this.nbDeCookiesDifferents * Math.random()), c2.ligne, c2.colonne);
+        this.tabCookies[ligne + 2][colonne] = new Cookie(Math.floor(this.nbDeCookiesDifferents * Math.random()), c3.ligne, c3.colonne);
 
         this.detecteAlignementColonne();
 
