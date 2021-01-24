@@ -68,7 +68,7 @@ class Grille {
           this.tabCookiesCliquees = [];
         }
       });
-      
+
       // PARTIE GERANT LE DRAG N DROP
 
       img.ondragstart = (evt) => {
@@ -164,6 +164,8 @@ class Grille {
         this.tabCookies[i][j] = new Cookie(type, i, j);
       }
     }
+
+    // this.detecteAlignements();
   }
 
 
@@ -203,12 +205,21 @@ class Grille {
         c1.selectionnee();
         c2.selectionnee();
         c3.selectionnee();
-        this.nbAlignements++;
 
+        /*
         // on les supprime
         c1.supprimer();
         c2.supprimer();
         c3.supprimer();
+        */
+
+       ligneGrille[l] = new Cookie(Math.floor(this.nbDeCookiesDifferents * Math.random()), this.ligne, this.colonne);
+       ligneGrille[l + 1] = new Cookie(Math.floor(this.nbDeCookiesDifferents * Math.random()), this.ligne, this.colonne);
+       ligneGrille[l + 2] = new Cookie(Math.floor(this.nbDeCookiesDifferents * Math.random()), this.ligne, this.colonne);
+
+       this.detecteAlignementLigne();
+
+        this.nbAlignements++;
       }
     }
   }
@@ -226,12 +237,21 @@ class Grille {
         c1.selectionnee();
         c2.selectionnee();
         c3.selectionnee();
-        this.nbAlignements++;
 
+        /*
         // on les supprime
         c1.supprimer();
         c2.supprimer();
         c3.supprimer();
+        */
+
+        this.tabCookies[ligne][colonne] = new Cookie(Math.floor(this.nbDeCookiesDifferents * Math.random()), this.ligne, this.colonne);
+        this.tabCookies[ligne + 1][colonne] = new Cookie(Math.floor(this.nbDeCookiesDifferents * Math.random()), this.ligne, this.colonne);
+        this.tabCookies[ligne + 2][colonne] = new Cookie(Math.floor(this.nbDeCookiesDifferents * Math.random()), this.ligne, this.colonne);
+
+        this.detecteAlignementColonne();
+
+        this.nbAlignements++;
       }
     }
   }
@@ -246,7 +266,7 @@ class Grille {
     // On charge les deux cookies
     let c1 = this.tabCookiesCliquees[0];
     let c2 = this.tabCookiesCliquees[1];
-    
+
     // On échange leurs images et types    
     let image2 = c2.htmlImage.src;
     let type2 = c2.type;

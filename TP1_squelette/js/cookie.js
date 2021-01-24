@@ -82,4 +82,9 @@ class Cookie {
   supprimer() {
     this.htmlImage.classList.add("cookie-cachee");
   }
+  
+  generateRandomCookie(nbDeCookiesDifferents){
+    let type = Math.floor(nbDeCookiesDifferents * Math.random());
+    return new Cookie(type, this.ligne, this.colonne);
+  }
 }
