@@ -11,12 +11,16 @@ import android.widget.TextView;
 
 public class ChatActivity extends Activity implements Chat{
 
+    public static final String LOG = "TP-ANDROID-CHAT";
+
     Button envoyez;
     TextView chat;
     ScrollView scroll;
     EditText message;
     Switch connexion;
     Préférences preferences;
+
+    Ecouteur ecouteur;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,38 +38,40 @@ public class ChatActivity extends Activity implements Chat{
         connexion = findViewById(R.id.connexion);
 
         // Ecouteur du click
-        Ecouteur ecouteurClick = new Ecouteur(this);
-        envoyez.setOnClickListener(ecouteurClick);
-
-        // Ecouteur du switch
-        Ecouteur ecouteurSwitch = new Ecouteur(connexion);
-        connexion.setOnCheckedChangeListener(ecouteurSwitch);
+        ecouteur = new Ecouteur(this, preferences);
+        envoyez.setOnClickListener(ecouteur);
+        connexion.setOnCheckedChangeListener(ecouteur);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Ecouteur ecouteurSwitch = new Ecouteur(connexion);
-        ecouteurSwitch.connexion();
+        ecouteur.connexion();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Ecouteur ecouteurSwitch = new Ecouteur(connexion);
-        ecouteurSwitch.deconnexion();
+        // On vérifie que la conexion n'est pas déjà faite
+        if(connexion.isChecked()){
+            ecouteur.connexion();
+        }
     }
 
     @Override
     public String obtenirTextTapé() {
-        return preferences.obtenirSurnom() + ">" + message.getText().toString() + "\n";
+        message.setText("");
+        return message.getText().toString() + "\n";
     }
 
     @Override
     public void ajouterMessage(String msg) {
-        // Permet de reset le texte
-        chat.setText(R.string.blank);
-        chat.append(msg);
-        scroll.fullScroll(View.FOCUS_DOWN);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                chat.append(msg);
+                scroll.fullScroll(View.FOCUS_DOWN);
+            }
+        });
     }
 }
