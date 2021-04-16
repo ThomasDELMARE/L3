@@ -4,4 +4,7 @@
     <string name="tapez_votre_message">Tapez votre message</string>
     <string name="envoyer">envoyer</string>
     <string name="listes">Liste des personnes connectées :</string>
+    <string name="surnom">Surnom</string>
+    <string name="reglages">Réglages</string>
+    <string name="adresseIp">Adresse IP</string>
 </resources>

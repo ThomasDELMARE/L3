@@ -1,6 +1,7 @@
 package fr.unice.l3.android_tp01;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -12,9 +13,11 @@ import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ChatActivity extends Activity implements Chat {
 
+    public static final int CODE_MENU_REGLAGES = 1;
     public static final String LOG = "TP-ANDROID-CHAT";
 
     EditText message;
@@ -99,7 +102,28 @@ public class ChatActivity extends Activity implements Chat {
         if (item.getItemId() == R.id.listesconnectes) {
             écouteur.demandeListesConnectés();
         }
+        if (item.getItemId() == R.id.reglages) {
+            prefs.obtenirRéglages(this);
+            startActivityForResult(prefs.obtenirRéglages(this), CODE_MENU_REGLAGES);
+        }
         return true;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == CODE_MENU_REGLAGES){
+            if(resultCode == Activity.RESULT_OK){
+                boolean dataCorrect = prefs.reçoit(data);
+
+                if(!dataCorrect){
+                    Toast toast = Toast.makeText(this, "Veuillez entrer un prénom valide", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+                else{
+                    écouteur.changerConnextion(connexion.isChecked());
+                }
+            }
+        }
+    }
 }

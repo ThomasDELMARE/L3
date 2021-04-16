@@ -1,0 +1,129 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>DemoServer</groupId>
+	<artifactId>DemoServer</artifactId>
+	<version>0.0.1</version>
+	<build>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.0</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.6.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>java</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<mainClass>server.Server</mainClass>
+					 <arguments>
+                                <argument>192.168.1.22</argument>
+                                <argument>10101</argument>
+                        </arguments>
+				</configuration>
+			</plugin>
+
+
+			<!-- http://maven.apache.org/plugins/maven-dependency-plugin/examples/copying-project-dependencies.html 
+				mvn dependency:copy-dependencies -DoutputDirectory=OUTPUT_DIR D:\apache-maven-3.3.9\bin\mvn 
+				dependency:copy-dependencies -DoutputDirectory=JARS java -cp serverIO.jar:libs/jackson-annotations-2.4.0.jar:libs/jackson-core-2.4.3.jar:libs/jackson-databind-2.4.3.jar:libs/netty-buffer-4.0.25.Final.jar:libs/netty-codec-4.0.25.Final.jar:libs/netty-codec-http-4.0.25.Final.jar:libs/netty-common-4.0.25.Final.jar:libs/netty-handler-4.0.25.Final.jar:libs/netty-socketio-1.7.7.jar:libs/netty-transport-4.0.25.Final.jar:libs/netty-transport-native-epoll-4.0.25.Final.jar:libs/slf4j-api-1.7.7.jar:libs/slf4j-simple-1.7.7.jar:. 
+				server.Server 134.59.2.27 10101 -->
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/alternateLocation</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<!-- usage (le résultat est dans target) : mvn package -->
+					<archive>
+						<manifest>
+							<mainClass>server.Server</mainClass>
+						</manifest>
+					</archive>
+
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef> <!-- jar-with-dependencies : à ne pas changer -->
+					</descriptorRefs>
+				</configuration>
+
+				<executions>
+					<execution>
+						<id>single</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+
+
+
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> <!-- CHANGE ME -->
+		<compiler.source>1.8</compiler.source> <!-- CHANGE ME -->
+		<compiler.target>1.8</compiler.target> <!-- CHANGE ME -->
+	</properties>
+
+
+
+
+
+
+
+	<dependencies>
+		<dependency>
+			<groupId>com.corundumstudio.socketio</groupId>
+			<artifactId>netty-socketio</artifactId>
+			<version>1.7.17</version>
+		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-transport</artifactId>
+			<version>4.1.32.Final</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.7.25</version>
+		</dependency>
+	</dependencies>
+</project>

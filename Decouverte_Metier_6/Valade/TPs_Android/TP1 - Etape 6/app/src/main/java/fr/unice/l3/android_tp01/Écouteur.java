@@ -16,9 +16,7 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
-public class Écouteur implements View.OnClickListener,
-        CompoundButton.OnCheckedChangeListener,
-        Emitter.Listener {
+public class Écouteur implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, Emitter.Listener {
     private Chat chat;
     private Socket socket;
     private Préférences préférences;
@@ -27,7 +25,15 @@ public class Écouteur implements View.OnClickListener,
         setChat(chat);
         setPréférences(préférences);
         try {
-            socket = IO.socket("http://78.243.124.47:10102");
+            // Serveur perso
+            // socket = IO.socket("http://192.168.1.22:10101");
+
+            // Serveur Toto
+            socket = IO.socket("http://2.15.255.168:10101");
+
+                    // Serveur du prof
+            // socket = IO.socket("http://78.243.124.47:10102");
+
             socket.on("chatevent", this);
             socket.on("connected list", new Emitter.Listener() {
                 @Override
@@ -101,10 +107,19 @@ public class Écouteur implements View.OnClickListener,
         try {
             final String username = data.getString("userName");
             final String message = data.getString("message");
+            Log.e(ChatActivity.LOG, message);
             chat.ajouterMessage(username + " > " + message + "\n");
         } catch (JSONException e) {
             Log.e(ChatActivity.LOG, "JSONException");
             return;
+        }
+    }
+
+    private void créerConnexion(){
+        try{
+            socket = IO.socket("http://" + getPréférences().obtenirServeur() + ":" + getPréférences().obtenirPort());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
         }
     }
 
@@ -113,12 +128,23 @@ public class Écouteur implements View.OnClickListener,
     }
 
     public void connexion() {
-        if (socket != null) socket.connect();
+        if (socket != null){
+            créerConnexion();
+            socket.connect();
+        }
     }
 
     public void demandeListesConnectés(){
         if(socket != null){
             socket.emit("queryconnected");
+        }
+    }
+
+    public void changerConnextion(boolean connexion) {
+        deconnexion();
+        créerConnexion();
+        if(connexion){
+            connexion();
         }
     }
 }
