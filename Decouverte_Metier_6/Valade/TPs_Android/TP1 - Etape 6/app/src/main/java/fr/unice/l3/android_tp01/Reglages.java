@@ -9,43 +9,32 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class Reglages extends AppCompatActivity {
+public class Reglages extends Activity {
 
     EditText surnom;
     EditText serveur;
     EditText port;
-
-    Button boutonRetour;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reglages);
 
-        surnom = this.findViewById(R.id.surnomText);
-        serveur = this.findViewById(R.id.adresseIpText);
-        port = this.findViewById(R.id.portText);
+        surnom = this.findViewById(R.id.editSurnom);
+        serveur = this.findViewById(R.id.editServeur);
+        port = this.findViewById(R.id.editPort);
 
         surnom.setText(getIntent().getStringExtra(Préférences.surnom));
         serveur.setText(getIntent().getStringExtra(Préférences.serveur));
         port.setText(getIntent().getStringExtra(Préférences.port));
+    }
 
-        boutonRetour = this.findViewById(R.id.retourButton);
-
-        /*
-        boutonRetour.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-         */
+    public void retour(View v){
+        onBackPressed();
     }
 
     @Override
     public void onBackPressed() {
-        // super.onBackPressed();
-        finish();
-
         Intent responseIntent = new Intent();
 
         responseIntent.putExtra(Préférences.SURNOM, surnom.getText().toString());
@@ -53,9 +42,8 @@ public class Reglages extends AppCompatActivity {
         responseIntent.putExtra(Préférences.PORT, port.getText().toString());
 
         setResult(Activity.RESULT_OK, responseIntent);
+
+        super.onBackPressed();
     }
 
-    public void retour(View v){
-        onBackPressed();
-    }
 }

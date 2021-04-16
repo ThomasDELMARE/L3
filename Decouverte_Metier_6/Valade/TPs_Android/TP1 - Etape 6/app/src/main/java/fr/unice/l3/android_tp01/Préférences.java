@@ -6,8 +6,13 @@ import android.widget.Toast;
 
 public class Préférences {
     public static String surnom = "DELMARE";
-    public static String serveur = "2.15.255.168";
-    public static String port = "10101";
+
+    // Serveur prof
+    public static String serveur = "88.160.63.150";
+    public static String port = "40102";
+
+    // public static String serveur = "2.15.255.168";
+    // public static String port = "10101";
 
     public static final String SURNOM = "surnom";
     public static final String SERVEUR = "serveur";
@@ -45,9 +50,9 @@ public class Préférences {
     }
 
     boolean reçoit(Intent data){
-        String nouveauSurnom = data.getStringExtra("SURNOM");
-        String nouveauPort = data.getStringExtra("PORT");
-        String nouveauServeur = data.getStringExtra("SERVEUR");
+        String nouveauSurnom = data.getStringExtra(SURNOM);
+        String nouveauPort = data.getStringExtra(PORT);
+        String nouveauServeur = data.getStringExtra(SERVEUR);
 
         if(nouveauSurnom != null || nouveauSurnom == "")
         {

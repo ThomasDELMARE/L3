@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 public class ChatActivity extends Activity implements Chat {
 
-    public static final int CODE_MENU_REGLAGES = 1;
+    public static final int CODE_MENU_REGLAGES = 42;
     public static final String LOG = "TP-ANDROID-CHAT";
 
     EditText message;
@@ -102,8 +102,7 @@ public class ChatActivity extends Activity implements Chat {
         if (item.getItemId() == R.id.listesconnectes) {
             écouteur.demandeListesConnectés();
         }
-        if (item.getItemId() == R.id.reglages) {
-            prefs.obtenirRéglages(this);
+        else if (item.getItemId() == R.id.reglages) {
             startActivityForResult(prefs.obtenirRéglages(this), CODE_MENU_REGLAGES);
         }
         return true;
@@ -111,7 +110,6 @@ public class ChatActivity extends Activity implements Chat {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == CODE_MENU_REGLAGES){
             if(resultCode == Activity.RESULT_OK){
                 boolean dataCorrect = prefs.reçoit(data);
