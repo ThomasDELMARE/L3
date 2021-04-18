@@ -2,6 +2,7 @@ package fr.unice.l3.android_tp01;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 
 public class Préférences {
     public static String surnom = "DELMARE";
@@ -71,6 +72,18 @@ public class Préférences {
             result = true;
         }
         return result;
+    }
+
+    public void saveIn(Bundle b){
+        b.putString(SURNOM_KEY, obtenirSurnom());
+        b.putString(SERVEUR_KEY, obtenirServeur());
+        b.putString(PORT_KEY, obtenirPort());
+    }
+
+    public void restoreFrom(Bundle b){
+        changerSurnom(b.getString(SURNOM_KEY));
+        changerPort(b.getString(PORT_KEY));
+        changerServeur(b.getString(SERVEUR_KEY));
     }
 
 }

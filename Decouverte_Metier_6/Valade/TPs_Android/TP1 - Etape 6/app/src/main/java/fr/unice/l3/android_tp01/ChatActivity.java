@@ -15,6 +15,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 public class ChatActivity extends Activity implements Chat {
 
     public static final int CODE_MENU_REGLAGES = 42;
@@ -41,11 +43,32 @@ public class ChatActivity extends Activity implements Chat {
 
         connexion = findViewById(R.id.connexion);
         prefs = new Préférences();
+
+        if(savedInstanceState != null){
+            prefs.restoreFrom(savedInstanceState);
+        }
+
         écouteur = new Écouteur(this, prefs);
         envoyer.setOnClickListener(écouteur);
         connexion.setOnCheckedChangeListener(écouteur);
 
         activerInterface(false);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle instanceSauvegardee) {
+        super.onSaveInstanceState(instanceSauvegardee);
+
+        CharSequence logText = chat.getText();
+        instanceSauvegardee.putCharSequence("LOGCHAT", logText);
+        prefs.saveIn(instanceSauvegardee);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle instanceSauvegardee) {
+        super.onRestoreInstanceState(instanceSauvegardee);
+
+        chat.append(instanceSauvegardee.getCharSequence("LOGCHAT"));
     }
 
     @Override
