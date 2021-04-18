@@ -58,6 +58,7 @@ public class Écouteur implements View.OnClickListener, CompoundButton.OnChecked
         } else {
             deconnexion();
         }
+        chat.activerInterface(isChecked);
     }
 
     public void setPréférences(Préférences préférences) {

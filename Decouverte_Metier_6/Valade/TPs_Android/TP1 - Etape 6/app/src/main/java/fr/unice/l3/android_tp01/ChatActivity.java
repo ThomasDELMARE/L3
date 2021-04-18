@@ -33,6 +33,7 @@ public class ChatActivity extends Activity implements Chat {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
         message = findViewById(R.id.message);
         chat = findViewById(R.id.chat);
         scroll = findViewById(R.id.scroll);
@@ -43,6 +44,8 @@ public class ChatActivity extends Activity implements Chat {
         écouteur = new Écouteur(this, prefs);
         envoyer.setOnClickListener(écouteur);
         connexion.setOnCheckedChangeListener(écouteur);
+
+        activerInterface(false);
     }
 
     @Override
@@ -79,6 +82,12 @@ public class ChatActivity extends Activity implements Chat {
     }
 
     @Override
+    public void activerInterface(boolean activation) {
+        message.setEnabled(activation);
+        envoyer.setEnabled(activation);
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         écouteur.deconnexion();
@@ -87,7 +96,9 @@ public class ChatActivity extends Activity implements Chat {
     @Override
     public void onResume() {
         super.onResume();
-        if (connexion.isChecked()) écouteur.connexion();
+        if (connexion.isChecked()){
+            écouteur.connexion();
+        }
     }
 
 
