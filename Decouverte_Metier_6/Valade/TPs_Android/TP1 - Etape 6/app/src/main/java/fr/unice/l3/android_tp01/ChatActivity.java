@@ -119,7 +119,7 @@ public class ChatActivity extends Activity implements Chat {
                     toast.show();
                 }
                 else{
-                    écouteur.changerConnextion(connexion.isChecked());
+                    écouteur.changerConnexion(connexion.isChecked());
                 }
             }
         }

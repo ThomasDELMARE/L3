@@ -42,7 +42,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:onClick="retour"/>
-
     <TextView
         android:id="@+id/adresseIp"
         android:layout_width="139dp"

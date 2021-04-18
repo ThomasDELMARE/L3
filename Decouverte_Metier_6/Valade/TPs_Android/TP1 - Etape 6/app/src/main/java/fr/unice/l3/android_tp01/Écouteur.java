@@ -24,39 +24,6 @@ public class Écouteur implements View.OnClickListener, CompoundButton.OnChecked
     public Écouteur(Chat chat, Préférences préférences) {
         setChat(chat);
         setPréférences(préférences);
-        try {
-            // Serveur perso
-            // socket = IO.socket("http://192.168.1.22:10101");
-
-            // Serveur Toto
-            socket = IO.socket("http://2.15.255.168:10101");
-
-                    // Serveur du prof
-            // socket = IO.socket("http://78.243.124.47:10102");
-
-            socket.on("chatevent", this);
-            socket.on("connected list", new Emitter.Listener() {
-                @Override
-                public void call(Object... args) {
-                    JSONObject data = (JSONObject) args[0];
-                    try {
-                        JSONArray connected = data.getJSONArray("connected");
-                        String liste = "*** connecté-es ****\n";
-                        for (int i = 0; i < connected.length(); i++){
-                            liste += connected.get(i).toString()+'\n';
-                        }
-                        liste +="********\n";
-                        chat.ajouterMessage(liste, Color.RED);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-
     }
 
     @Override
@@ -118,6 +85,27 @@ public class Écouteur implements View.OnClickListener, CompoundButton.OnChecked
     private void créerConnexion(){
         try{
             socket = IO.socket("http://" + getPréférences().obtenirServeur() + ":" + getPréférences().obtenirPort());
+
+            socket.on("chatevent", this);
+            socket.on("connected list", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        JSONArray connected = data.getJSONArray("connected");
+                        String liste = "*** connecté-es ****\n";
+                        for (int i = 0; i < connected.length(); i++){
+                            liste += connected.get(i).toString()+'\n';
+                        }
+                        liste +="********\n";
+                        chat.ajouterMessage(liste, Color.RED);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -128,10 +116,10 @@ public class Écouteur implements View.OnClickListener, CompoundButton.OnChecked
     }
 
     public void connexion() {
-        if (socket != null){
+        if (socket == null){
             créerConnexion();
-            socket.connect();
         }
+        socket.connect();
     }
 
     public void demandeListesConnectés(){
@@ -140,7 +128,7 @@ public class Écouteur implements View.OnClickListener, CompoundButton.OnChecked
         }
     }
 
-    public void changerConnextion(boolean connexion) {
+    public void changerConnexion(boolean connexion) {
         deconnexion();
         créerConnexion();
         if(connexion){
