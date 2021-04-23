@@ -7,14 +7,15 @@ import android.os.Bundle;
 public class Préférences {
     public static String surnom = "DELMARE";
 
-    // Serveur prof
+    // Serveur de monsieur Valade
     // public static String serveur = "88.160.63.150";
     // public static String port = "40102";
 
-    // Serveur Toto
+    // Serveur perso
     public static String serveur = "2.15.255.168";
     public static String port = "10101";
 
+    // Clés nous permettant de passer des données
     public static final String SURNOM_KEY = "surnom";
     public static final String SERVEUR_KEY = "serveur";
     public static final String PORT_KEY = "port";
@@ -39,6 +40,7 @@ public class Préférences {
         this.surnom = nouveauSurnom;
     }
 
+    // Méthode permettant d'obtenir les règlages lors de l'envoi de ces derniers dans la page de paramètres.
     public Intent obtenirRéglages(Context c){
         Intent myIntent = new Intent(c, Reglages.class);
 
@@ -49,6 +51,7 @@ public class Préférences {
         return myIntent;
     }
 
+    // Méthode permettabt de recevoir les nouveaux paramétrages que l'utilisateur a fait.
     boolean reçoit(Intent data){
         String nouveauSurnom = data.getStringExtra(SURNOM_KEY);
         String nouveauPort = data.getStringExtra(PORT_KEY);
@@ -74,12 +77,14 @@ public class Préférences {
         return result;
     }
 
+    // Méthode permettant de récupérer les valeurs entrées par l'utilisateur afin de ne pas les supprimer lorsqu'il tourne son écran.
     public void saveIn(Bundle b){
         b.putString(SURNOM_KEY, obtenirSurnom());
         b.putString(SERVEUR_KEY, obtenirServeur());
         b.putString(PORT_KEY, obtenirPort());
     }
 
+    // Méthode permettant de restorer les valeurs entrées par l'utilisateur afin de ne pas les supprimer lorsqu'il tourne son écran.
     public void restoreFrom(Bundle b){
         changerSurnom(b.getString(SURNOM_KEY));
         changerPort(b.getString(PORT_KEY));

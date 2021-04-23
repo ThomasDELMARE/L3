@@ -15,7 +15,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+import fr.unice.l3.android_tp01.ecouteurs.EcouteurClick;
+import fr.unice.l3.android_tp01.ecouteurs.EcouteurSwitch;
 
 public class ChatActivity extends Activity implements Chat {
 
@@ -28,9 +29,11 @@ public class ChatActivity extends Activity implements Chat {
     Button envoyer;
     Préférences prefs;
 
-    Écouteur écouteur;
+    EcouteurClick ecouteurClick;
+    EcouteurSwitch ecouteurSwitch;
     Switch connexion;
 
+    // Methode permettant de définir toutes les variables crées lors du lancement de l'application
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,13 +51,15 @@ public class ChatActivity extends Activity implements Chat {
             prefs.restoreFrom(savedInstanceState);
         }
 
-        écouteur = new Écouteur(this, prefs);
-        envoyer.setOnClickListener(écouteur);
-        connexion.setOnCheckedChangeListener(écouteur);
+        ecouteurClick = new EcouteurClick(this, prefs);
+        ecouteurSwitch = new EcouteurSwitch(this, prefs);
+        envoyer.setOnClickListener(ecouteurClick);
+        connexion.setOnCheckedChangeListener(ecouteurSwitch);
 
         activerInterface(false);
     }
 
+    // Méthode permettant de sauvegarder l'instance de l'application actuelle
     @Override
     protected void onSaveInstanceState(Bundle instanceSauvegardee) {
         super.onSaveInstanceState(instanceSauvegardee);
@@ -64,6 +69,7 @@ public class ChatActivity extends Activity implements Chat {
         prefs.saveIn(instanceSauvegardee);
     }
 
+    // Méthode permettant de restaurer l'instance précédemment sauvegardée.
     @Override
     protected void onRestoreInstanceState(Bundle instanceSauvegardee) {
         super.onRestoreInstanceState(instanceSauvegardee);
@@ -71,6 +77,7 @@ public class ChatActivity extends Activity implements Chat {
         chat.append(instanceSauvegardee.getCharSequence("LOGCHAT"));
     }
 
+    // Méthode permettant d'obtenir le message tapé par l'utilisateur.
     @Override
     public String obtenirTextTapé() {
         String texte = message.getText().toString();
@@ -78,6 +85,7 @@ public class ChatActivity extends Activity implements Chat {
         return texte;
     }
 
+    // Méthode permettant d'ajouter au chat le message tapé par l'utilisateur.
     @Override
     public void ajouterMessage(final String msg) {
         runOnUiThread(new Runnable() {
@@ -90,6 +98,7 @@ public class ChatActivity extends Activity implements Chat {
         });
     }
 
+    // Méthode permettant d'ajouter au chat un message stylisé tapé par l'utilisateur.
     @Override
     public void ajouterMessage(final String msg, final int couleur){
         runOnUiThread(new Runnable() {
@@ -104,6 +113,7 @@ public class ChatActivity extends Activity implements Chat {
         });
     }
 
+    // Méthode permettant d'activer certains éléments de l'application lorsque le switch est activé.
     @Override
     public void activerInterface(boolean activation) {
         message.setEnabled(activation);
@@ -113,28 +123,29 @@ public class ChatActivity extends Activity implements Chat {
     @Override
     public void onPause() {
         super.onPause();
-        écouteur.deconnexion();
+        ecouteurSwitch.deconnexion();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         if (connexion.isChecked()){
-            écouteur.connexion();
+            ecouteurSwitch.connexion();
         }
     }
 
-
+    // Méthode permettant de créer les entrées du menu.
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.chat, menu);
         return true;
     }
 
+    // Méthode gérant la sélection des objets du menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         if (item.getItemId() == R.id.listesconnectes) {
-            écouteur.demandeListesConnectés();
+            ecouteurClick.demandeListesConnectés();
         }
         else if (item.getItemId() == R.id.reglages) {
             startActivityForResult(prefs.obtenirRéglages(this), CODE_MENU_REGLAGES);
@@ -142,6 +153,7 @@ public class ChatActivity extends Activity implements Chat {
         return true;
     }
 
+    // Méthode gérant l'arrivée d'information venant du menu paramétrage.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == CODE_MENU_REGLAGES){
@@ -153,7 +165,7 @@ public class ChatActivity extends Activity implements Chat {
                     toast.show();
                 }
                 else{
-                    écouteur.changerConnexion(connexion.isChecked());
+                    ecouteurClick.changerConnexion(connexion.isChecked());
                 }
             }
         }

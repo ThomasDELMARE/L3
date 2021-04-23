@@ -12,6 +12,7 @@ public class Reglages extends Activity {
     EditText serveur;
     EditText port;
 
+    // Permet de récupérer les paramètres.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +27,7 @@ public class Reglages extends Activity {
         port.setText(getIntent().getStringExtra(Préférences.PORT_KEY));
     }
 
+    // Méthode qui gère le bouton retour
     public void retour(View v){
         onBackPressed();
     }

@@ -1,34 +1,38 @@
-package fr.unice.l3.android_tp01;
+package fr.unice.l3.android_tp01.ecouteurs;
 
 import android.graphics.Color;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.CompoundButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
+
+import fr.unice.l3.android_tp01.Chat;
+import fr.unice.l3.android_tp01.Préférences;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
-public class Écouteur implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, Emitter.Listener {
+public class EcouteurClick implements View.OnClickListener, Emitter.Listener {
+
     private Chat chat;
     private Socket socket;
     private Préférences préférences;
 
-    public Écouteur(Chat chat, Préférences préférences) {
+    public EcouteurClick(Chat chat, Préférences préférences) {
         setChat(chat);
         setPréférences(préférences);
     }
 
+    // Méthode qui gère le click de l'utilisateur.
     @Override
     public void onClick(View v) {
         String msg = chat.obtenirTextTapé();
+
+        connexion();
+
         if (socket != null) {
             JSONObject obj = new JSONObject();
             try {
@@ -50,17 +54,6 @@ public class Écouteur implements View.OnClickListener, CompoundButton.OnChecked
         return chat;
     }
 
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        Log.e(ChatActivity.LOG, "switch " + isChecked);
-        if (isChecked) {
-            connexion();
-        } else {
-            deconnexion();
-        }
-        chat.activerInterface(isChecked);
-    }
-
     public void setPréférences(Préférences préférences) {
         this.préférences = préférences;
     }
@@ -70,19 +63,9 @@ public class Écouteur implements View.OnClickListener, CompoundButton.OnChecked
     }
 
     @Override
-    public void call(Object... args) {
-        JSONObject data = (JSONObject) args[0];
-        try {
-            final String username = data.getString("userName");
-            final String message = data.getString("message");
-            Log.e(ChatActivity.LOG, message);
-            chat.ajouterMessage(username + " > " + message + "\n");
-        } catch (JSONException e) {
-            Log.e(ChatActivity.LOG, "JSONException");
-            return;
-        }
-    }
+    public void call(Object... args) {}
 
+    // Méthode permettant de créer la connexion
     private void créerConnexion(){
         try{
             socket = IO.socket("http://" + getPréférences().obtenirServeur() + ":" + getPréférences().obtenirPort());
@@ -112,10 +95,12 @@ public class Écouteur implements View.OnClickListener, CompoundButton.OnChecked
         }
     }
 
+    // Méthode permettant de se déconnecter du serveur
     public void deconnexion() {
         if (socket != null) socket.disconnect();
     }
 
+    // Méthode permettant de se connecter au serveur
     public void connexion() {
         if (socket == null){
             créerConnexion();
@@ -123,12 +108,14 @@ public class Écouteur implements View.OnClickListener, CompoundButton.OnChecked
         socket.connect();
     }
 
+    // Méthode permettant de renvoyer la liste des utilisateurs connectés.
     public void demandeListesConnectés(){
         if(socket != null){
             socket.emit("queryconnected");
         }
     }
 
+    // Méthode permettant de redéfinir les paramètres de connexion.
     public void changerConnexion(boolean connexion) {
         deconnexion();
         créerConnexion();
