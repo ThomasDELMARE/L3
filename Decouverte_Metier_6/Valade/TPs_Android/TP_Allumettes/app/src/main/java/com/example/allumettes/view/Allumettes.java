@@ -76,15 +76,13 @@ public class Allumettes extends View {
     @Override
     protected void onDraw(Canvas canvas) {
 
-        int allumettesAPlacer = 21;
+        int aPlacer = this.nombreAllumettesVisibles;
         int dx, dy, lx = padding, ly = padding;
 
         // Allumettes normales
 
         for (int j = 0; j < this.nbLigne; j++) {
             for (int i = 0; i < nombreAllumettesParLigne; i++) {
-                lx = this.padding + (i * this.largeurAllumette) * 2;
-                ly = (this.padding * (j + 1)) + j * this.hauteurAllumette;
 
                 dx = lx + this.largeurAllumette;
                 dy = ly + this.hauteurAllumette;
@@ -92,23 +90,27 @@ public class Allumettes extends View {
                 allumette.setBounds(lx, ly, dx, dy);
                 allumette.draw(canvas);
 
-                allumettesAPlacer -= 1;
+                lx += 2 * largeurAllumette;
 
+                // CAS POUR LES ALLUMETTES SELECTIONNES
+                if (aPlacer <= nbAlumettesSelectionnees) {
+                    // TODO : Completer
+                }
 
-                if (allumettesAPlacer == 0) {
+                // CAS POUR LES ALLUMETTTES VIDES
+                if (aPlacer < nombreAllumettesParLigne * nbLigne) {
+                    // TODO : Completer
+                }
+
+                aPlacer -= 1;
+
+                if (aPlacer == 0) {
                     break;
                 }
+
             }
+            lx = padding;
+            ly += hauteurAllumette + padding;
         }
-
-        // Allumettes sélectionnées
-
-
-
-        // Allumettes vides
-
-
-
-
     }
 }
