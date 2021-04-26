@@ -3,6 +3,7 @@ package com.example.allumettes.view;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -21,8 +22,8 @@ public class Allumettes extends View {
     int nombreAllumettesParLigne = 11;
 
     int nombreTotalAllumettes = 21;
-    int nbAlumettesSelectionnees = 0;
-    int nombreAllumettesVisibles = 21;
+    int nbAlumettesSelectionnees = 3;
+    int nombreAllumettesVisibles = 18;
 
     int largeurAllumette;
     int hauteurAllumette;
@@ -47,11 +48,16 @@ public class Allumettes extends View {
         }
 
         pPlein = new Paint();
-
         pPlein.setColor(Color.rgb(0, 128, 0));
         pPlein.setAntiAlias(true);
         pPlein.setStrokeWidth(padding / 2);
         pPlein.setStyle(Paint.Style.STROKE);
+
+        pTiret = new Paint(pPlein);
+        DashPathEffect effet = new DashPathEffect(new float[]{10, 25}, 0);
+        pTiret.setPathEffect(effet);
+        pTiret.setStrokeWidth(2);
+        pTiret.setColor(Color.GRAY);
     }
 
     @Override
@@ -76,31 +82,33 @@ public class Allumettes extends View {
     @Override
     protected void onDraw(Canvas canvas) {
 
-        int aPlacer = this.nombreAllumettesVisibles;
+        int aPlacer = this.nombreTotalAllumettes;
         int dx, dy, lx = padding, ly = padding;
 
         // Allumettes normales
 
         for (int j = 0; j < this.nbLigne; j++) {
-            for (int i = 0; i < nombreAllumettesParLigne; i++) {
+            for (int i = 0; i < this.nombreAllumettesParLigne; i++) {
 
                 dx = lx + this.largeurAllumette;
                 dy = ly + this.hauteurAllumette;
 
-                allumette.setBounds(lx, ly, dx, dy);
-                allumette.draw(canvas);
+                if (nombreAllumettesVisibles > 0) {
+                    allumette.setBounds(lx, ly, dx, dy);
+                    allumette.draw(canvas);
+                    nombreAllumettesVisibles -= 1;
+
+                    // CAS POUR LES ALLUMETTES SELECTIONNES
+                    // A CHANGER PLUS TARD POUR LES ALLUMETTES CLIQUEES OU PAS
+                    if (nombreAllumettesVisibles < getNbAlumettesSelectionnees()) {
+                        canvas.drawRect(lx - padding / 4, ly - padding / 4, dx + padding / 4, dy + padding / 4, pPlein);
+                    }
+                } else {
+                    // CAS POUR LES ALLUMETTTES ENLEVEES
+                    canvas.drawRect(lx, ly, dx, dy, pTiret);
+                }
 
                 lx += 2 * largeurAllumette;
-
-                // CAS POUR LES ALLUMETTES SELECTIONNES
-                if (aPlacer <= nbAlumettesSelectionnees) {
-                    // TODO : Completer
-                }
-
-                // CAS POUR LES ALLUMETTTES VIDES
-                if (aPlacer < nombreAllumettesParLigne * nbLigne) {
-                    // TODO : Completer
-                }
 
                 aPlacer -= 1;
 
@@ -112,5 +120,13 @@ public class Allumettes extends View {
             lx = padding;
             ly += hauteurAllumette + padding;
         }
+    }
+
+    public int getNbAlumettesSelectionnees() {
+        return nbAlumettesSelectionnees;
+    }
+
+    public void setNbAlumettesSelectionnees(int nbAlumettesSelectionnees) {
+        this.nbAlumettesSelectionnees = nbAlumettesSelectionnees;
     }
 }
