@@ -7,7 +7,6 @@ import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.renderscript.ScriptIntrinsicConvolve5x5;
 import android.view.View;
 import android.util.AttributeSet;
 
@@ -25,12 +24,13 @@ public class Allumettes extends View {
     int nbAlumettesSelectionnees = 3;
     int nombreAllumettesVisibles = 18;
 
-    int largeurAllumette;
-    int hauteurAllumette;
+    final float RATIO_MAX = 0.15f;
+    final float RATIO_MIN = 0.05f;
+
+    float largeurAllumette;
+    float hauteurAllumette;
     Paint pTiret;
     Paint pPlein;
-    boolean etatInitial = false;
-
 
     Drawable allumette;
 
@@ -69,20 +69,34 @@ public class Allumettes extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        calculerDimensionAllumettes();
     }
 
     protected void calculerDimensionAllumettes() {
         int largeurFenetre = getWidth();
+        int hauteurFenetre = getHeight();
 
         this.largeurAllumette = (largeurFenetre - 2 * this.padding) / (this.nombreAllumettesParLigne * 2 - 1);
-        this.hauteurAllumette = (int) (largeurAllumette / 0.15);
+        this.hauteurAllumette = (hauteurFenetre - 3 * this.padding) / this.nbLigne;
+
+        if(hauteurAllumette > 0 && largeurAllumette > 0){
+            // On ne veut pas que les ratios soient en dehors de 0.05 et 0.15
+            if(this.largeurAllumette / this.hauteurAllumette > RATIO_MAX){
+                this.largeurAllumette = (int) (this.hauteurAllumette * RATIO_MAX);
+            }
+
+            else if((this.largeurAllumette / this.hauteurAllumette) < RATIO_MIN){
+                this.hauteurAllumette = (int) (this.largeurAllumette / RATIO_MIN);
+            }
+        }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
 
+        // On les place dans des variables sinon il y a des problemes de compilation
         int aPlacer = this.nombreTotalAllumettes;
+        int nbAllumettesVisibles = this.nombreAllumettesVisibles;
         int dx, dy, lx = padding, ly = padding;
 
         // Allumettes normales
@@ -90,17 +104,17 @@ public class Allumettes extends View {
         for (int j = 0; j < this.nbLigne; j++) {
             for (int i = 0; i < this.nombreAllumettesParLigne; i++) {
 
-                dx = lx + this.largeurAllumette;
-                dy = ly + this.hauteurAllumette;
+                dx = (int) (lx + this.largeurAllumette);
+                dy = (int) (ly + this.hauteurAllumette);
 
-                if (nombreAllumettesVisibles > 0) {
+                if (nbAllumettesVisibles > 0) {
                     allumette.setBounds(lx, ly, dx, dy);
                     allumette.draw(canvas);
-                    nombreAllumettesVisibles -= 1;
+                    nbAllumettesVisibles -= 1;
 
                     // CAS POUR LES ALLUMETTES SELECTIONNES
                     // A CHANGER PLUS TARD POUR LES ALLUMETTES CLIQUEES OU PAS
-                    if (nombreAllumettesVisibles < getNbAlumettesSelectionnees()) {
+                    if (nbAllumettesVisibles < getNbAlumettesSelectionnees()) {
                         canvas.drawRect(lx - padding / 4, ly - padding / 4, dx + padding / 4, dy + padding / 4, pPlein);
                     }
                 } else {
