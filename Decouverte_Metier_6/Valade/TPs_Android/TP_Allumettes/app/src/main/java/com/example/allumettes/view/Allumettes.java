@@ -16,17 +16,14 @@ import com.example.allumettes.R;
 
 public class Allumettes extends View {
 
-    int padding = 30;
-    int nbLigne = 2;
-    int nombreAllumettesParLigne = 11;
-
-    int nombreTotalAllumettes = 21;
-    int nbAlumettesSelectionnees = 3;
-    int nombreAllumettesVisibles = 18;
-
     final float RATIO_MAX = 0.15f;
     final float RATIO_MIN = 0.05f;
-
+    int padding = 30;
+    int nombreLigne = 2;
+    int nombreAllumettesParLigne = 11;
+    int nombreTotalAllumettes = 21;
+    int nombreAlumettesSelectionnees = 0;
+    int nombreAllumettesVisibles = 21;
     float largeurAllumette;
     float hauteurAllumette;
     Paint pTiret;
@@ -76,18 +73,16 @@ public class Allumettes extends View {
         int hauteurFenetre = getHeight();
 
         this.largeurAllumette = (largeurFenetre - 2 * this.padding) / (this.nombreAllumettesParLigne * 2 - 1);
-        this.hauteurAllumette = (hauteurFenetre - 3 * this.padding) / this.nbLigne;
+        this.hauteurAllumette = (hauteurFenetre - 3 * this.padding) / this.nombreLigne;
 
-        if(hauteurAllumette > 0 && largeurAllumette > 0){
-            // On ne veut pas que les ratios soient en dehors de 0.05 et 0.15
-            if(this.largeurAllumette / this.hauteurAllumette > RATIO_MAX){
-                this.largeurAllumette = (int) (this.hauteurAllumette * RATIO_MAX);
-            }
+        // On ne veut pas que les ratios soient en dehors de 0.05 et 0.15
+        if (this.largeurAllumette / this.hauteurAllumette > RATIO_MAX) {
+            this.largeurAllumette = (int) (this.hauteurAllumette * RATIO_MAX);
 
-            else if((this.largeurAllumette / this.hauteurAllumette) < RATIO_MIN){
-                this.hauteurAllumette = (int) (this.largeurAllumette / RATIO_MIN);
-            }
+        } else if ((this.largeurAllumette / this.hauteurAllumette) < RATIO_MIN) {
+            this.hauteurAllumette = (int) (this.largeurAllumette / RATIO_MIN);
         }
+
     }
 
     @Override
@@ -100,8 +95,7 @@ public class Allumettes extends View {
         int dx, dy, lx = padding, ly = padding;
 
         // Allumettes normales
-
-        for (int j = 0; j < this.nbLigne; j++) {
+        for (int j = 0; j < this.nombreLigne; j++) {
             for (int i = 0; i < this.nombreAllumettesParLigne; i++) {
 
                 dx = (int) (lx + this.largeurAllumette);
@@ -114,7 +108,7 @@ public class Allumettes extends View {
 
                     // CAS POUR LES ALLUMETTES SELECTIONNES
                     // A CHANGER PLUS TARD POUR LES ALLUMETTES CLIQUEES OU PAS
-                    if (nbAllumettesVisibles < getNbAlumettesSelectionnees()) {
+                    if (nbAllumettesVisibles < getNombreAlumettesSelectionnees()) {
                         canvas.drawRect(lx - padding / 4, ly - padding / 4, dx + padding / 4, dy + padding / 4, pPlein);
                     }
                 } else {
@@ -136,11 +130,23 @@ public class Allumettes extends View {
         }
     }
 
-    public int getNbAlumettesSelectionnees() {
-        return nbAlumettesSelectionnees;
+    public int getNombreAlumettesSelectionnees() {
+        return nombreAlumettesSelectionnees;
     }
 
-    public void setNbAlumettesSelectionnees(int nbAlumettesSelectionnees) {
-        this.nbAlumettesSelectionnees = nbAlumettesSelectionnees;
+    public void setNombreAlumettesSelectionnees(int nombreAlumettesSelectionnees) {
+        this.nombreAlumettesSelectionnees = nombreAlumettesSelectionnees;
+    }
+
+    public void setNombreTotalAllumettes(int nombreTotalAllumettes) {
+        this.nombreTotalAllumettes = nombreTotalAllumettes;
+        this.nombreAllumettesVisibles = nombreTotalAllumettes;
+        nombreAlumettesSelectionnees = 0;
+        calculerDimensionAllumettes();
+    }
+
+    public void enleverAllumettes(int allumettesAEnlever){
+        this.nombreAllumettesVisibles -= allumettesAEnlever;
+        this.nombreAlumettesSelectionnees = 0;
     }
 }
